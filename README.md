@@ -18,25 +18,41 @@ Aplikasi mobile untuk membantu pemilik hewan peliharaan dan dokter hewan dalam m
 - 🔗 [Lihat Desain Lengkap di Figma](https://www.figma.com/design/TLOn5rddd4oxIXPSQNtmLI/Untitled?node-id=0-1&t=25pzWxu9qdWqRo4s-1)
 - 📷 **Cuplikan Tampilan Aplikasi:**
 
-### 🏠 Main
-![Main](desain/Main.png)
-
-### 👥 Pilih User
-![Pilih User](desain/Pilih%20User.png)
-
-### 🔐 Sign In
-![Sign In](desain/Sign%20in.png)
-
-### 📝 Register
-![Register](desain/Register.png)
-
-### 🆕 Sign Up
-![Sign Up](desain/Sign%20up.png)
-
-### 🏥 Home Dokter
-![Home Dokter](desain/Home%20Dokter.png)
-
-### ➕ Tambah Data
-![Tambah Data](desain/tambah%20data.png)
-
----
+<table>
+  <tr>
+    <td align="center">
+      <strong>🏠 Main</strong><br>
+      <img src="desain/Main.png" alt="Main" width="250"/>
+    </td>
+    <td align="center">
+      <strong>👥 Pilih User</strong><br>
+      <img src="desain/Pilih%20User.png" alt="Pilih User" width="250"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>🔐 Sign In</strong><br>
+      <img src="desain/Sign%20in.png" alt="Sign In" width="250"/>
+    </td>
+    <td align="center">
+      <strong>📝 Register</strong><br>
+      <img src="desain/Register.png" alt="Register" width="250"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>🆕 Sign Up</strong><br>
+      <img src="desain/Sign%20up.png" alt="Sign Up" width="250"/>
+    </td>
+    <td align="center">
+      <strong>🏥 Home Dokter</strong><br>
+      <img src="desain/Home%20Dokter.png" alt="Home Dokter" width="250"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <strong>➕ Tambah Data</strong><br>
+      <img src="desain/tambah%20data.png" alt="Tambah Data" width="250"/>
+    </td>
+  </tr>
+</table>
