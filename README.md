@@ -21,38 +21,31 @@ Aplikasi mobile untuk membantu pemilik hewan peliharaan dan dokter hewan dalam m
 <table>
   <tr>
     <td align="center">
-      <strong>🏠 Main</strong><br>
-      <img src="desain/Main.png" alt="Main" width="180"/>
+      <img src="desain/Main.png" width="150"/><br><strong>🏠 Main</strong>
     </td>
     <td align="center">
-      <strong>👥 Pilih User</strong><br>
-      <img src="desain/Pilih%20User.png" alt="Pilih User" width="180"/>
+      <img src="desain/Pilih%20User.png" width="150"/><br><strong>👥 Pilih User</strong>
+    </td>
+    <td align="center">
+      <img src="desain/Sign%20in.png" width="150"/><br><strong>🔐 Sign In</strong>
+    </td>
+    <td align="center">
+      <img src="desain/Register.png" width="150"/><br><strong>📝 Register</strong>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <strong>🔐 Sign In</strong><br>
-      <img src="desain/Sign%20in.png" alt="Sign In" width="180"/>
+      <img src="desain/Sign%20up.png" width="150"/><br><strong>🆕 Sign Up</strong>
     </td>
     <td align="center">
-      <strong>📝 Register</strong><br>
-      <img src="desain/Register.png" alt="Register" width="180"/>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <strong>🆕 Sign Up</strong><br>
-      <img src="desain/Sign%20up.png" alt="Sign Up" width="180"/>
+      <img src="desain/Home%20Dokter.png" width="150"/><br><strong>🏥 Home Dokter</strong>
     </td>
     <td align="center">
-      <strong>🏥 Home Dokter</strong><br>
-      <img src="desain/Home%20Dokter.png" alt="Home Dokter" width="180"/>
+      <img src="desain/tambah%20data.png" width="150"/><br><strong>➕ Tambah Data</strong>
     </td>
-  </tr>
-  <tr>
-    <td align="center" colspan="2">
-      <strong>➕ Tambah Data</strong><br>
-      <img src="desain/tambah%20data.png" alt="Tambah Data" width="180"/>
+    <td align="center">
+      <!-- Kosongkan atau tambah gambar ke-8 -->
+      <br>
     </td>
   </tr>
 </table>
