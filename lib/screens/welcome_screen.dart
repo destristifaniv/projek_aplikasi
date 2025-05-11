@@ -18,118 +18,85 @@ class WelcomeScreen extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isSmallScreen = constraints.maxWidth < 700;
-            final isMediumScreen = constraints.maxWidth < 1000;
-
-            final logoSize = isSmallScreen
-                ? 140.0
-                : isMediumScreen
-                    ? 160.0
-                    : 180.0;
-
-            final widthFactor = isSmallScreen
-                ? 0.5
-                : isMediumScreen
-                    ? 0.4
-                    : 0.35;
-
-            final buttonFontSize = isSmallScreen
-                ? 12.0
-                : isMediumScreen
-                    ? 14.0
-                    : 16.0;
-
-            final buttonPadding = EdgeInsets.symmetric(
-              horizontal: isSmallScreen
-                  ? 20
-                  : isMediumScreen
-                      ? 24
-                      : 30,
-              vertical: isSmallScreen
-                  ? 10
-                  : isMediumScreen
-                      ? 12
-                      : 14,
-            );
-
-            return Stack(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFFFAD0D8), // Pink pastel
+                Colors.white, // Putih
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Column(
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: FractionallySizedBox(
-                          widthFactor: widthFactor,
-                          child: Image.asset(
-                            Assets.petSnapLogo,
-                            width: logoSize,
-                            height: logoSize,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.only(bottom: screenSize.height * 0.22),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const RoleSelectionScreen(),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: buttonPadding,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFCC8A8A),
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.25),
-                                offset: Offset(0, 4),
-                                blurRadius: 4,
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            'Mulai',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: buttonFontSize,
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 0.24,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                // Logo
+                Image.asset(
+                  Assets.petSnapLogo,
+                  width: screenSize.width * 0.3,
+                  fit: BoxFit.contain,
                 ),
 
-                // Home Indicator
-                Positioned(
-                  bottom: 10,
-                  left: (screenSize.width / 2) - 67,
+                SizedBox(height: screenSize.height * 0.03),
+
+                // Ilustrasi Dokter
+                Image.asset(
+                  'assets/images/ilustrasi_dokter.png',
+                  width: screenSize.width * 0.7,
+                  height: screenSize.height * 0.3,
+                  fit: BoxFit.contain,
+                ),
+
+                SizedBox(height: screenSize.height * 0.05),
+
+                // Tombol Mulai
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RoleSelectionScreen(),
+                      ),
+                    );
+                  },
                   child: Container(
-                    width: 134,
-                    height: 5,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(100),
+                      color: Colors.pink.shade200,  // Tombol dengan warna pastel
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromRGBO(0, 0, 0, 0.25),
+                          offset: Offset(0, 4),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                    child: const Text(
+                      'Mulai',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.24,
+                      ),
                     ),
                   ),
                 ),
+
+                SizedBox(height: screenSize.height * 0.04), // Spacer bawah agar tidak mentok
               ],
-            );
-          },
+            ),
+          ),
         ),
       ),
     );

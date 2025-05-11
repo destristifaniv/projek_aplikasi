@@ -19,7 +19,7 @@ class _HomeDokterScreenState extends State<HomeDokterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF1F1F1), // Warna background yang lebih lembut
       body: SafeArea(
         child: Column(
           children: [
@@ -32,14 +32,13 @@ class _HomeDokterScreenState extends State<HomeDokterScreen> {
                 fontFamily: 'Montserrat',
                 fontSize: 15,
                 fontWeight: FontWeight.w400,
-                color: Colors.black,
+                color: Colors.pinkAccent, // Ubah warna teks
               ),
               textAlign: TextAlign.center,
             ),
             const Spacer(),
             _buildBottomNavBar(context),
             const SizedBox(height: 10),
-            _buildHomeIndicator(),
           ],
         ),
       ),
@@ -53,7 +52,7 @@ class _HomeDokterScreenState extends State<HomeDokterScreen> {
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.black.withOpacity(0.1)),
+          border: Border.all(color: Colors.pinkAccent.withOpacity(0.3)),
           borderRadius: BorderRadius.circular(999),
         ),
         child: Row(
@@ -64,11 +63,12 @@ class _HomeDokterScreenState extends State<HomeDokterScreen> {
                 style: const TextStyle(
                   fontFamily: 'Montserrat',
                   fontSize: 14,
+                  color: Colors.pinkAccent, // Ubah warna teks input
                 ),
                 decoration: const InputDecoration(
                   hintText: 'Cari pasien...',
                   hintStyle: TextStyle(
-                    color: Colors.black54,
+                    color: Colors.pinkAccent, // Ubah warna hint text
                     fontFamily: 'Montserrat',
                     fontSize: 14,
                   ),
@@ -84,7 +84,7 @@ class _HomeDokterScreenState extends State<HomeDokterScreen> {
               icon: const Icon(
                 Icons.search,
                 size: 20,
-                color: Colors.black54,
+                color: Colors.pinkAccent, // Ubah warna ikon
               ),
             ),
           ],
@@ -102,7 +102,7 @@ class _HomeDokterScreenState extends State<HomeDokterScreen> {
       width: screenWidth * 0.9,
       height: navBarHeight,
       decoration: BoxDecoration(
-        color: const Color.fromRGBO(204, 138, 138, 0.2),
+        color: Colors.pink.shade50, // Gunakan warna pink yang lebih soft
         borderRadius: BorderRadius.circular(50),
       ),
       child: Padding(
@@ -123,27 +123,14 @@ class _HomeDokterScreenState extends State<HomeDokterScreen> {
     return CircleAvatar(
       radius: 25,
       backgroundColor: isCenter
-          ? const Color(0xFFCC8A8A)
+          ? Colors.pink.shade300 // Gunakan warna pink yang lebih lembut untuk ikon center
           : Colors.white,
       child: Icon(
         icon,
         color: isCenter
             ? Colors.white
-            : const Color(0xFFCC8A8A),
+            : Colors.pink.shade300, // Warna ikon yang lebih lembut
         size: 28,
-      ),
-    );
-  }
-
-  Widget _buildHomeIndicator() {
-    return Center(
-      child: Container(
-        width: 134,
-        height: 5,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(100),
-        ),
       ),
     );
   }
