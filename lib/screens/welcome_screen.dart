@@ -71,7 +71,7 @@ class WelcomeScreen extends StatelessWidget {
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.pink.shade200,  // Tombol dengan warna pastel
+                      color: const Color(0xFFF48FB1),  // Tombol dengan warna pastel
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: const [
                         BoxShadow(
