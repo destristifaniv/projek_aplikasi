@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'tambah_pasien_screen.dart';
+import '../providers/pasien_provider.dart';
+import '../models/pasien.dart';
+import 'detail_pasien_screen.dart';
+import 'profile_dokter_screen.dart'; // Import halaman profil dokter
 
-// Warna tema pink soft
 const Color primaryColor = Color(0xFFF8A5B3); // Pink pastel
 const Color primaryLight = Color(0xFFFDc4D0); // Pink muda
 const Color backgroundColor = Color(0xFFFEE2E4); // Pink sangat lembut
@@ -16,20 +20,13 @@ class HomeDokterScreen extends StatefulWidget {
 class _HomeDokterScreenState extends State<HomeDokterScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  final List<Map<String, String>> pasienList = [
-    {
-      'hewan': 'Kucing, Putih, Anggora, 1 tahun',
-      'pemilik': 'Dian, Jl. Veteran No.21, 081122334455',
-    },
-    {
-      'hewan': 'Anjing, Coklat, Husky, 2 tahun',
-      'pemilik': 'Rudi, Jl. Melati No.5, 085956784321',
-    },
-    {
-      'hewan': 'Kelinci, Putih, Holland Lop, 5 bulan',
-      'pemilik': 'Sari, Jl. Mawar No.10, 081234567890',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<PasienProvider>(context, listen: false).loadPasienFromPrefs();
+    });
+  }
 
   @override
   void dispose() {
@@ -50,25 +47,41 @@ class _HomeDokterScreenState extends State<HomeDokterScreen> {
             _buildSearchBar(),
             const SizedBox(height: 17),
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      itemCount: pasienList.length,
-                      itemBuilder: (context, index) {
-                        final pasien = pasienList[index];
-                        return _buildPasienCard(
-                          hewan: pasien['hewan']!,
-                          pemilik: pasien['pemilik']!,
-                        );
-                      },
+              child: Consumer<PasienProvider>(
+                builder: (context, pasienProvider, child) {
+                  final pasienList = pasienProvider.pasienList;
+                  final searchText = _searchController.text.toLowerCase();
+
+                  final filteredPasienList = pasienList.where((pasien) {
+                    return pasien.namaHewan.toLowerCase().contains(searchText) ||
+                        pasien.namaPemilik.toLowerCase().contains(searchText);
+                  }).toList();
+
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          itemCount: filteredPasienList.isEmpty ? 1 : filteredPasienList.length,
+                          itemBuilder: (context, index) {
+                            if (filteredPasienList.isEmpty) {
+                              return _buildNoPasienFound();
+                            }
+                            final pasien = filteredPasienList[index];
+                            return _buildPasienCard(
+                              hewan: pasien.namaHewan,
+                              pemilik: pasien.namaPemilik,
+                              pasien: pasien,
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
             const SizedBox(height: 10),
@@ -101,6 +114,9 @@ class _HomeDokterScreenState extends State<HomeDokterScreen> {
                   fontSize: 14,
                   color: primaryColor,
                 ),
+                onChanged: (text) {
+                  setState(() {});
+                },
                 decoration: InputDecoration(
                   hintText: 'Cari pasien...',
                   hintStyle: TextStyle(
@@ -119,7 +135,25 @@ class _HomeDokterScreenState extends State<HomeDokterScreen> {
     );
   }
 
-  Widget _buildPasienCard({required String hewan, required String pemilik}) {
+  Widget _buildNoPasienFound() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Text(
+        'Pasien tidak ditemukan',
+        style: TextStyle(
+          fontSize: 16,
+          fontFamily: 'Montserrat',
+          color: Colors.grey.shade700,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPasienCard({
+    required String hewan,
+    required String pemilik,
+    required Pasien pasien,
+  }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -158,19 +192,60 @@ class _HomeDokterScreenState extends State<HomeDokterScreen> {
           const SizedBox(height: 8),
           Align(
             alignment: Alignment.bottomRight,
-            child: TextButton(
-              onPressed: () {
-                print("Detail pasien: $hewan - $pemilik");
-              },
-              child: Text(
-                "Lihat Detail",
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontSize: 13,
-                  color: primaryColor.withOpacity(0.7),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailPasienScreen(pasien: pasien),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Lihat Detail",
+                    style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 13,
+                      color: primaryColor.withOpacity(0.7),
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: Icon(Icons.delete, color: Colors.red.shade400),
+                  onPressed: () {
+                    _tampilkanDialogHapus(context, pasien.namaHewan, pasien.namaPemilik);
+                  },
+                ),
+              ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _tampilkanDialogHapus(BuildContext context, String namaHewan, String namaPemilik) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Konfirmasi'),
+        content: Text('Yakin ingin menghapus pasien "$namaHewan" milik "$namaPemilik"?'),
+        actions: [
+          TextButton(
+            child: const Text('Batal'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+            onPressed: () {
+              Provider.of<PasienProvider>(context, listen: false)
+                  .hapusPasienBerdasarkanNama(namaHewan, namaPemilik);
+              Navigator.of(context).pop();
+            },
           ),
         ],
       ),
@@ -197,11 +272,20 @@ class _HomeDokterScreenState extends State<HomeDokterScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const TambahPasienScreen()),
+                  MaterialPageRoute(builder: (context) => TambahPasienScreen()),
                 );
               },
             ),
-            _navIcon(icon: Icons.person),
+            _navIcon(
+              icon: Icons.person,
+              onTap: () {
+                // Navigate to the doctor's profile screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileDokterScreen()),
+                );
+              },
+            ),
           ],
         ),
       ),

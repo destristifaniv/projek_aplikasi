@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
-// Import semua screen yang kamu gunakan
 import 'screens/welcome_screen.dart';
+import 'providers/pasien_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Lock orientasi ke portrait
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => PasienProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -29,11 +35,6 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Montserrat',
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      // Ganti halaman awal sesuai kebutuhan:
-      // const WelcomeScreen()
-      // const RoleSelectionScreen()
-      // const SignInScreen()
-      // const RegisterScreen()
       home: const WelcomeScreen(),
     );
   }

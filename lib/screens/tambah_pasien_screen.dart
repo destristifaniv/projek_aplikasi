@@ -1,184 +1,137 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:klinik_hewan/models/pasien.dart';
+import 'package:klinik_hewan/providers/pasien_provider.dart';
+
+// Tambahkan warna yang sama seperti di HomeDokterScreen
+const Color primaryColor = Color(0xFFF8A5B3); // Pink pastel
+const Color primaryLight = Color(0xFFFDc4D0); // Pink muda
+const Color backgroundColor = Color(0xFFFEE2E4); // Pink sangat lembut
 
 class TambahPasienScreen extends StatefulWidget {
-  const TambahPasienScreen({super.key});
-
   @override
-  State<TambahPasienScreen> createState() => _TambahPasienScreenState();
+  _TambahPasienScreenState createState() => _TambahPasienScreenState();
 }
 
-class _TambahPasienScreenState extends State<TambahPasienScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _slideAnimation;
-  late Animation<double> _fadeAnimation;
+class _TambahPasienScreenState extends State<TambahPasienScreen> {
+  final _formKey = GlobalKey<FormState>();
 
-  final namaHewanController = TextEditingController();
-  final warnaController = TextEditingController();
-  final jenisController = TextEditingController();
-  final umurController = TextEditingController();
-  final namaPemilikController = TextEditingController();
-  final alamatController = TextEditingController();
-  final noTelpController = TextEditingController();
-
-  final primaryColor = const Color(0xFFF8A5B3); // Pink pastel
-  final secondaryColor = const Color(0xFFFDC4D0); // Pink muda
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 600));
-    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-    _fadeAnimation = Tween<double>(begin: 0, end: 1)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
-    _controller.forward();
-  }
+  final TextEditingController namaHewanController = TextEditingController();
+  final TextEditingController jenisHewanController = TextEditingController();
+  final TextEditingController warnaController = TextEditingController();
+  final TextEditingController umurController = TextEditingController();
+  final TextEditingController namaPemilikController = TextEditingController();
+  final TextEditingController alamatController = TextEditingController();
+  final TextEditingController noTelpController = TextEditingController();
 
   @override
   void dispose() {
-    _controller.dispose();
+    namaHewanController.dispose();
+    jenisHewanController.dispose();
+    warnaController.dispose();
+    umurController.dispose();
+    namaPemilikController.dispose();
+    alamatController.dispose();
+    noTelpController.dispose();
     super.dispose();
   }
 
-  InputDecoration get inputDecoration => InputDecoration(
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.95),
-        hintStyle: const TextStyle(fontFamily: 'Montserrat', color: Colors.grey),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: secondaryColor.withOpacity(0.4)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: secondaryColor.withOpacity(0.4)),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
-      );
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: Text(
-          'Tambah Pasien',
-          style: TextStyle(
-            fontFamily: 'Montserrat',
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: primaryColor,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: primaryColor),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [secondaryColor.withOpacity(0.2), Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SafeArea(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: SlideTransition(
-              position: _slideAnimation,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 100),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _sectionTitle('Informasi Hewan'),
-                    TextField(
-                        controller: namaHewanController,
-                        decoration:
-                            inputDecoration.copyWith(hintText: 'Nama Hewan')),
-                    const SizedBox(height: 14),
-                    TextField(
-                        controller: warnaController,
-                        decoration: inputDecoration.copyWith(hintText: 'Warna')),
-                    const SizedBox(height: 14),
-                    TextField(
-                        controller: jenisController,
-                        decoration: inputDecoration.copyWith(hintText: 'Jenis')),
-                    const SizedBox(height: 14),
-                    TextField(
-                        controller: umurController,
-                        decoration: inputDecoration.copyWith(hintText: 'Umur')),
-                    const SizedBox(height: 28),
-                    _sectionTitle('Informasi Pemilik'),
-                    TextField(
-                        controller: namaPemilikController,
-                        decoration:
-                            inputDecoration.copyWith(hintText: 'Nama Pemilik')),
-                    const SizedBox(height: 14),
-                    TextField(
-                        controller: alamatController,
-                        decoration: inputDecoration.copyWith(hintText: 'Alamat')),
-                    const SizedBox(height: 14),
-                    TextField(
-                        controller: noTelpController,
-                        decoration:
-                            inputDecoration.copyWith(hintText: 'Nomor Telepon')),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context, {
-              'hewan':
-                  '${namaHewanController.text}, Umur ${umurController.text}, ${jenisController.text}, ${warnaController.text}',
-              'pemilik':
-                  '${namaPemilikController.text}, ${alamatController.text}, ${noTelpController.text}',
-            });
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: primaryColor,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-            elevation: 8,
-            shadowColor: Colors.black38,
-          ),
-          child: const Text(
-            'Simpan Data',
-            style: TextStyle(
-              fontFamily: 'Montserrat',
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-            ),
+  Widget buildInputField(String label, TextEditingController controller, {TextInputType type = TextInputType.text}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: type,
+        validator: (value) {
+          if (value == null || value.isEmpty) return 'Tidak boleh kosong';
+          if (label.contains('Umur') && int.tryParse(value) == null) return 'Umur harus angka';
+          return null;
+        },
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: GoogleFonts.montserrat(color: Colors.grey[800]),
+          filled: true,
+          fillColor: primaryLight.withOpacity(0.2),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: primaryColor, width: 1.5),
           ),
         ),
       ),
     );
   }
 
-  Widget _sectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'Montserrat',
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: primaryColor,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        title: Text('Tambah Pasien', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
+        centerTitle: true,
+        backgroundColor: primaryColor,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Informasi Hewan', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
+                SizedBox(height: 6),
+                buildInputField('Nama Hewan', namaHewanController),
+                buildInputField('Jenis Hewan', jenisHewanController),
+                buildInputField('Warna', warnaController),
+                buildInputField('Umur', umurController, type: TextInputType.number),
+
+                SizedBox(height: 20),
+                Text('Informasi Pemilik', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
+                SizedBox(height: 6),
+                buildInputField('Nama Pemilik', namaPemilikController),
+                buildInputField('Alamat', alamatController),
+                buildInputField('No. Telepon', noTelpController, type: TextInputType.phone),
+
+                SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      elevation: 4,
+                      shadowColor: Colors.pinkAccent.withOpacity(0.3),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        final Pasien pasienBaru = Pasien(
+                          namaHewan: namaHewanController.text,
+                          jenis: jenisHewanController.text,
+                          warna: warnaController.text,
+                          umur: int.parse(umurController.text),
+                          namaPemilik: namaPemilikController.text,
+                          alamat: alamatController.text,
+                          noTelp: noTelpController.text,
+                        );
+
+                        Provider.of<PasienProvider>(context, listen: false).addPasien(pasienBaru);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Pasien berhasil ditambahkan')),
+                        );
+
+                        _formKey.currentState!.reset();
+                      }
+                    },
+                    child: Text('Simpan Pasien', style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
