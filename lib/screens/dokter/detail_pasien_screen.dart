@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../models/pasien.dart';
+import '../../models/pasien.dart';
 
 const Color primaryColor = Color(0xFFF8A5B3); // Warna pink pastel
 const Color primaryLight = Color(0xFFFDC4D0); // Warna pink muda

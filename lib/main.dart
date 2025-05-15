@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
 import 'screens/welcome_screen.dart';
 import 'providers/pasien_provider.dart';
+import 'providers/pet_provider.dart';
+import 'screens/pemilik/pet_list_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +17,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => PasienProvider()),
+        ChangeNotifierProvider(create: (_) => PetProvider()),
       ],
       child: const MyApp(),
     ),

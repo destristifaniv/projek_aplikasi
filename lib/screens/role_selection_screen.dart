@@ -38,13 +38,15 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
   }
 
   void navigateToSignIn(String role) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SignInScreen(role: role),
-      ),
-    );
-  }
+  // ubah langsung jadi string role tanpa spasi dan huruf kecil
+  String normalizedRole = (role == 'Dokter') ? 'dokter' : 'pemilik';
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => SignInScreen(role: normalizedRole),
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {

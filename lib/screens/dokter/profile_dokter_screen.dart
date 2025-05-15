@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:klinik_hewan/screens/Home_dokter_screen.dart';
-import 'package:klinik_hewan/screens/tambah_pasien_screen.dart';
+import 'package:klinik_hewan/screens/dokter/home_dokter_screen.dart';
+import 'package:klinik_hewan/screens/dokter/tambah_pasien_screen.dart';
 
 const Color primaryColor = Color(0xFFF8A5B3); // Pink pastel
 const Color primaryLight = Color(0xFFFDc4D0); // Pink muda

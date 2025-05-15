@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:klinik_hewan/screens/home_dokter_screen.dart';
+import 'package:klinik_hewan/screens/dokter/home_dokter_screen.dart';
+import 'package:klinik_hewan/screens/pemilik/home_pemilik_screen.dart';
 import 'package:klinik_hewan/screens/onboarding_screen.dart'; // Pastikan OnboardingScreen diimpor
 import '../constants/assets.dart';
 
@@ -53,11 +54,24 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
 
   void _handleSignIn() {
     print('Login sebagai: ${widget.role}');
+  
+  if (widget.role == 'pemilik') {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomePemilikScreen()),
+    );
+  } else if (widget.role == 'dokter') {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const HomeDokterScreen()),
     );
+  } else {
+    // Fallback: jika role tidak dikenali
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Peran tidak dikenali')),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {

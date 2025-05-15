@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:klinik_hewan/models/pasien.dart';
 import 'package:klinik_hewan/providers/pasien_provider.dart';
 
-// Tambahkan warna yang sama seperti di HomeDokterScreen
-const Color primaryColor = Color(0xFFF8A5B3); // Pink pastel
-const Color primaryLight = Color(0xFFFDc4D0); // Pink muda
-const Color backgroundColor = Color(0xFFFEE2E4); // Pink sangat lembut
+// Warna tema pink soft
+const Color primaryColor = Color(0xFFF8A5B3);
+const Color primaryLight = Color(0xFFFDc4D0);
+const Color backgroundColor = Color(0xFFFEE2E4);
 
 class TambahPasienScreen extends StatefulWidget {
   @override
@@ -24,6 +24,9 @@ class _TambahPasienScreenState extends State<TambahPasienScreen> {
   final TextEditingController namaPemilikController = TextEditingController();
   final TextEditingController alamatController = TextEditingController();
   final TextEditingController noTelpController = TextEditingController();
+
+  bool _isExpandedHewan = true;
+  bool _isExpandedPemilik = false;
 
   @override
   void dispose() {
@@ -78,23 +81,48 @@ class _TambahPasienScreenState extends State<TambahPasienScreen> {
           child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Informasi Hewan', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
-                SizedBox(height: 6),
-                buildInputField('Nama Hewan', namaHewanController),
-                buildInputField('Jenis Hewan', jenisHewanController),
-                buildInputField('Warna', warnaController),
-                buildInputField('Umur', umurController, type: TextInputType.number),
-
-                SizedBox(height: 20),
-                Text('Informasi Pemilik', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold)),
-                SizedBox(height: 6),
-                buildInputField('Nama Pemilik', namaPemilikController),
-                buildInputField('Alamat', alamatController),
-                buildInputField('No. Telepon', noTelpController, type: TextInputType.phone),
-
-                SizedBox(height: 20),
+                ExpansionTile(
+                  initiallyExpanded: _isExpandedHewan,
+                  onExpansionChanged: (expanded) {
+                    setState(() {
+                      _isExpandedHewan = expanded;
+                    });
+                  },
+                  tilePadding: EdgeInsets.zero,
+                  childrenPadding: EdgeInsets.zero,
+                  title: Text(
+                    'Informasi Hewan',
+                    style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                  ),
+                  children: [
+                    buildInputField('Nama Hewan', namaHewanController),
+                    buildInputField('Jenis Hewan', jenisHewanController),
+                    buildInputField('Warna', warnaController),
+                    buildInputField('Umur', umurController, type: TextInputType.number),
+                  ],
+                ),
+                SizedBox(height: 12),
+                ExpansionTile(
+                  initiallyExpanded: _isExpandedPemilik,
+                  onExpansionChanged: (expanded) {
+                    setState(() {
+                      _isExpandedPemilik = expanded;
+                    });
+                  },
+                  tilePadding: EdgeInsets.zero,
+                  childrenPadding: EdgeInsets.zero,
+                  title: Text(
+                    'Informasi Pemilik',
+                    style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                  ),
+                  children: [
+                    buildInputField('Nama Pemilik', namaPemilikController),
+                    buildInputField('Alamat', alamatController),
+                    buildInputField('No. Telepon', noTelpController, type: TextInputType.phone),
+                  ],
+                ),
+                const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -124,6 +152,10 @@ class _TambahPasienScreenState extends State<TambahPasienScreen> {
                         );
 
                         _formKey.currentState!.reset();
+                        setState(() {
+                          _isExpandedHewan = true;
+                          _isExpandedPemilik = false;
+                        });
                       }
                     },
                     child: Text('Simpan Pasien', style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),

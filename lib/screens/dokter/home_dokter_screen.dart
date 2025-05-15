@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'tambah_pasien_screen.dart';
-import '../providers/pasien_provider.dart';
-import '../models/pasien.dart';
+import '../../providers/pasien_provider.dart';
+import '../../models/pasien.dart';
 import 'detail_pasien_screen.dart';
 import 'profile_dokter_screen.dart'; // Import halaman profil dokter
 
