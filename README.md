@@ -1,4 +1,4 @@
-# 🐾 PetCare - Aplikasi Klinik Hewan
+# 🐾 PetSnap - Aplikasi Klinik Hewan
 
 Aplikasi mobile untuk membantu pemilik hewan peliharaan dan dokter hewan dalam mengelola rekam medis serta informasi kesehatan hewan secara digital.
 
