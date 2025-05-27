@@ -1,75 +1,111 @@
 import 'package:flutter/material.dart';
-import 'package:klinik_hewan/screens/pemilik/profile_pemilik_screen.dart';
-import 'package:klinik_hewan/screens/pemilik/pets_screen.dart';
+import 'package:klinik_hewan/screens/pemilik/pets_screen.dart'; // Import PetsScreen
+import 'package:klinik_hewan/screens/pemilik/profile_pemilik_screen.dart'; // Import ProfilePemilikScreen
+import 'package:google_fonts/google_fonts.dart'; // Untuk font yang konsisten
 
-void main() {
-  runApp(const HomePemilikScreen());
-}
+// Pastikan warna-warna ini konsisten di seluruh aplikasi
+const Color primaryColor = Color(0xFFFF6B9D);
+const Color primaryLight = Color(0xFFFFB3D1);
+const Color backgroundColor = Color(0xFFFFF5F8); // Warna background utama
+const Color cardColor = Color(0xFFFFFFFF);
+const Color accentColor = Color(0xFFFF8FA3);
+const Color textPrimary = Color(0xFF2D3436);
+const Color textSecondary = Color(0xFF636E72);
+const Color secondaryColor = Color(0xFFFFA1B5); // Untuk gradient, dll.
 
+
+// Main Entry Point for Pemilik (biasanya di main.dart, tapi jika ini entry point spesifik pemilik)
 class HomePemilikScreen extends StatelessWidget {
-  const HomePemilikScreen({super.key});
+  final int akunId;
+
+  const HomePemilikScreen({super.key, required this.akunId});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Home Pemilik',
+      title: 'Klinik Hewan Pemilik',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'Montserrat',
-        scaffoldBackgroundColor: const Color(0xFFFDF9FA),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink.shade300),
+        fontFamily: 'Montserrat', // Menggunakan Montserrat sebagai font default
+        scaffoldBackgroundColor: backgroundColor, // Menggunakan warna latar belakang yang konsisten
+        colorScheme: ColorScheme.fromSeed(seedColor: primaryColor), // Warna utama aplikasi
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      home: HomeScreen(akunId: akunId),
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int akunId;
+
+  const HomeScreen({super.key, required this.akunId});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int _selectedIndex = 0;
+  List<Widget> _pages = []; // Deklarasikan sebagai List<Widget>
 
-  final List<Widget> _pages = [
-    const HomeContent(),
-    const PetsContent(),
-    const ProfileContent(),
-  ];
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
-  void _onNavBarTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300), // Durasi transisi fade
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    // Inisialisasi _pages di initState
+    _pages = [
+      HomeContent(akunId: widget.akunId), // Halaman Home/Dashboard
+      PetsScreen(idAkun: widget.akunId), // Halaman Daftar Hewan
+      ProfilePemilikScreen(akunId: widget.akunId.toString()), // Halaman Profil Pemilik
+    ];
+
+    _animationController.forward(); // Mulai animasi saat halaman pertama dimuat
   }
-
-  // FocusNode untuk search bar
-  final FocusNode _searchFocus = FocusNode();
 
   @override
   void dispose() {
-    _searchFocus.dispose();
+    _animationController.dispose();
     super.dispose();
+  }
+
+  void _onNavBarTapped(int index) {
+    if (_selectedIndex != index) { // Hanya update jika indeks berubah
+      setState(() {
+        _selectedIndex = index;
+      });
+      _animationController.forward(from: 0.0); // Mulai animasi fade dari awal
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
+      backgroundColor: backgroundColor, // Background Scaffold yang konsisten
+      body: FadeTransition( // Menerapkan FadeTransition ke konten halaman yang dipilih
+        opacity: _fadeAnimation,
+        child: _pages[_selectedIndex],
+      ),
+      bottomNavigationBar: BottomNavigationBar( // BottomNavigationBar standar Anda
         currentIndex: _selectedIndex,
         onTap: _onNavBarTapped,
         backgroundColor: Colors.white,
-        selectedItemColor: Colors.pink.shade300,
+        selectedItemColor: primaryColor, // Warna aktif konsisten
         unselectedItemColor: Colors.grey.shade400,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         elevation: 8,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_rounded, size: 28),
             label: 'Home',
@@ -79,29 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Pets',
           ),
           BottomNavigationBarItem(
-            icon: Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: _selectedIndex == 2
-                    ? Border.all(color: Colors.pink.shade300, width: 2)
-                    : null,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(18),
-                child: Image.asset(
-                  'assets/images/profile.png',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey.shade400,
-                      child: const Icon(Icons.person, color: Colors.white),
-                    );
-                  },
-                ),
-              ),
-            ),
+            icon: Icon(Icons.person_rounded, size: 28),
             label: 'Profile',
           ),
         ],
@@ -110,171 +124,308 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class HomeContent extends StatefulWidget {
-  const HomeContent({super.key});
-
-  @override
-  State<HomeContent> createState() => _HomeContentState();
-}
-
-class _HomeContentState extends State<HomeContent> {
-  final FocusNode _searchFocus = FocusNode();
-  bool _isFocused = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _searchFocus.addListener(() {
-      setState(() {
-        _isFocused = _searchFocus.hasFocus;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _searchFocus.dispose();
-    super.dispose();
-  }
+// Konten Halaman Home/Dashboard yang Diperbarui
+class HomeContent extends StatelessWidget {
+  final int akunId;
+  const HomeContent({super.key, required this.akunId});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Search bar dengan efek border shadow saat fokus
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(25),
-                boxShadow: _isFocused
-                    ? [
-                        BoxShadow(
-                          color: Colors.pink.shade200.withOpacity(0.6),
-                          blurRadius: 12,
-                          offset: const Offset(0, 6),
-                        ),
-                      ]
-                    : [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(screenWidth * 0.04), // Padding responsif
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header Selamat Datang dengan Gaya Modern
+          Container(
+            padding: EdgeInsets.all(screenWidth * 0.05), // Padding lebih besar
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [primaryColor, primaryLight], // Gradient warna primary
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              child: TextField(
-                focusNode: _searchFocus,
-                decoration: InputDecoration(
-                  hintText: 'Cari dokter, layanan, atau informasi...',
-                  hintStyle: TextStyle(color: Colors.grey.shade500),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                  border: InputBorder.none,
-                  suffixIcon: Icon(Icons.search, color: Colors.pink.shade300),
+              borderRadius: BorderRadius.circular(25), // Sudut lebih membulat
+              boxShadow: [ // Shadow lebih dalam
+                BoxShadow(
+                  color: primaryColor.withOpacity(0.4),
+                  blurRadius: 15,
+                  offset: const Offset(0, 8),
                 ),
-              ),
-            ),
-            const SizedBox(height: 30),
-
-            const Text(
-              'Fitur Utama',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 18),
-
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              children: [
-                _buildFeatureCard(
-                    context, Icons.local_hospital, 'Rekam Medis', Colors.blue.shade100),
-                _buildFeatureCard(
-                    context, Icons.calendar_month, 'Janji Temu', Colors.green.shade100),
               ],
             ),
-            const SizedBox(height: 36),
-
-            const Text(
-              'Info Terbaru',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 18),
-
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.pink.shade50, Colors.pink.shade100],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(22),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.pink.shade200.withOpacity(0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center, // Vertically center content
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Selamat Datang,',
+                        style: GoogleFonts.montserrat( // Menggunakan GoogleFonts
+                          fontSize: screenWidth * 0.05,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white.withOpacity(0.9),
+                        ),
+                      ),
+                      Text(
+                        'Pemilik Hewan!', // Atau bisa ambil nama pemilik jika tersedia di sini
+                        style: GoogleFonts.montserrat(
+                          fontSize: screenWidth * 0.07,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.01),
+                      Text(
+                        'Kelola hewan kesayangan Anda dengan mudah.',
+                        style: GoogleFonts.montserrat(
+                          fontSize: screenWidth * 0.035,
+                          color: Colors.white.withOpacity(0.9),
+                          height: 1.3,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
+                Icon(
+                  Icons.pets,
+                  color: Colors.white.withOpacity(0.8),
+                  size: screenWidth * 0.12, // Ukuran ikon lebih besar
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.04), // Spasi setelah header
+
+          // Bagian "Fitur Utama" dengan Card interaktif
+          Text(
+            'Fitur Utama',
+            style: GoogleFonts.montserrat(
+              fontSize: screenWidth * 0.055,
+              fontWeight: FontWeight.bold,
+              color: textPrimary,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.02),
+
+          // Card untuk navigasi ke PetsScreen
+          _buildInteractiveCard(
+            context,
+            icon: Icons.pets_rounded,
+            title: 'Daftar Hewan Anda',
+            subtitle: 'Lihat, tambah, edit, dan kelola semua hewan peliharaan Anda.',
+            onTap: () {
+              final homeScreenState = context.findAncestorStateOfType<_HomeScreenState>();
+              homeScreenState?._onNavBarTapped(1); // Navigasi ke PetsScreen (indeks 1)
+            },
+            color: primaryColor,
+            screenWidth: screenWidth,
+          ),
+          SizedBox(height: screenHeight * 0.02),
+
+          // Card untuk navigasi ke ProfilePemilikScreen
+          _buildInteractiveCard(
+            context,
+            icon: Icons.person_rounded,
+            title: 'Profil Akun',
+            subtitle: 'Perbarui informasi pribadi dan pengaturan akun Anda.',
+            onTap: () {
+              final homeScreenState = context.findAncestorStateOfType<_HomeScreenState>();
+              homeScreenState?._onNavBarTapped(2); // Navigasi ke ProfilePemilikScreen (indeks 2)
+            },
+            color: Colors.blueAccent, // Warna berbeda
+            screenWidth: screenWidth,
+          ),
+          SizedBox(height: screenHeight * 0.04),
+
+          // Bagian "Informasi & Tips"
+          Text(
+            'Informasi & Tips',
+            style: GoogleFonts.montserrat(
+              fontSize: screenWidth * 0.055,
+              fontWeight: FontWeight.bold,
+              color: textPrimary,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.02),
+
+          // Card untuk Tips Perawatan Hewan
+          _buildInfoCard(
+            context,
+            icon: Icons.lightbulb_outline,
+            title: 'Tips Perawatan Hewan',
+            content: 'Dapatkan tips dan panduan terbaik untuk menjaga kesehatan dan kebahagiaan hewan kesayangan Anda.',
+            color: Colors.orangeAccent,
+            screenWidth: screenWidth,
+          ),
+          SizedBox(height: screenHeight * 0.02),
+
+          // Card untuk Emergency Contact
+          _buildInfoCard(
+            context,
+            icon: Icons.call,
+            title: 'Kontak Darurat Klinik',
+            content: 'Dapatkan informasi kontak klinik darurat terdekat untuk hewan Anda.',
+            color: Colors.teal,
+            screenWidth: screenWidth,
+          ),
+          SizedBox(height: screenHeight * 0.12), // Spasi untuk Bottom Nav Bar
+        ],
+      ),
+    );
+  }
+
+  // Widget untuk kartu fitur interaktif (berisi icon, title, subtitle, onTap)
+  Widget _buildInteractiveCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    required Color color,
+    required double screenWidth,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(screenWidth * 0.05),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.15),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center, // Vertically center
+          children: [
+            Container(
+              padding: EdgeInsets.all(screenWidth * 0.03),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: Row(
+              child: Icon(icon, color: color, size: screenWidth * 0.08),
+            ),
+            SizedBox(width: screenWidth * 0.04),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.vaccines_rounded, color: Colors.pink.shade300),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Jangan lupa vaksinasi hewan peliharaan Anda bulan ini! 💉🐶🐱',
-                      style: const TextStyle(fontSize: 15),
+                  Text(
+                    title,
+                    style: GoogleFonts.montserrat(
+                      fontSize: screenWidth * 0.045,
+                      fontWeight: FontWeight.bold,
+                      color: textPrimary,
+                    ),
+                  ),
+                  SizedBox(height: screenWidth * 0.01),
+                  Text(
+                    subtitle,
+                    style: GoogleFonts.montserrat(
+                      fontSize: screenWidth * 0.035,
+                      color: textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
+            Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey[400], size: screenWidth * 0.05),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildFeatureCard(
-      BuildContext context, IconData icon, String title, Color color) {
+  // Widget untuk kartu informasi (tanpa onTap langsung, bisa ada tombol "Baca Selengkapnya" di dalamnya)
+  Widget _buildInfoCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String content,
+    required Color color,
+    required double screenWidth,
+  }) {
     return Container(
-      width: (MediaQuery.of(context).size.width - 56) / 2,
-      padding: const EdgeInsets.symmetric(vertical: 24),
+      padding: EdgeInsets.all(screenWidth * 0.05),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [color.withOpacity(0.6), color],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
+            color: color.withOpacity(0.15),
+            blurRadius: 12,
             offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 38, color: Colors.black87),
-          const SizedBox(height: 14),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.all(screenWidth * 0.03),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(icon, color: color, size: screenWidth * 0.08),
+              ),
+              SizedBox(width: screenWidth * 0.04),
+              Expanded(
+                child: Text(
+                  title,
+                  style: GoogleFonts.montserrat(
+                    fontSize: screenWidth * 0.045,
+                    fontWeight: FontWeight.bold,
+                    color: textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: screenWidth * 0.03),
           Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
+            content,
+            style: GoogleFonts.montserrat(
+              fontSize: screenWidth * 0.035,
+              color: textSecondary,
+              height: 1.5,
+            ),
+          ),
+          // Tambahkan tombol "Baca Selengkapnya" jika diperlukan
+          Align(
+            alignment: Alignment.bottomRight,
+            child: TextButton(
+              onPressed: () {
+                // Aksi untuk melihat lebih banyak tips/info
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Membaca lebih lanjut tentang $title')),
+                );
+              },
+              child: Text(
+                'Baca Selengkapnya',
+                style: GoogleFonts.montserrat(
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                  fontSize: screenWidth * 0.035,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -282,20 +433,23 @@ class _HomeContentState extends State<HomeContent> {
   }
 }
 
+// Kelas PetsContent dan ProfileContent tidak perlu perubahan
 class PetsContent extends StatelessWidget {
-  const PetsContent({super.key});
+  final int akunId;
+  const PetsContent({super.key, required this.akunId});
 
   @override
   Widget build(BuildContext context) {
-    return const PetsScreen();
+    return PetsScreen(idAkun: akunId);
   }
 }
 
 class ProfileContent extends StatelessWidget {
-  const ProfileContent({super.key});
+  final int akunId;
+  const ProfileContent({super.key, required this.akunId});
 
   @override
   Widget build(BuildContext context) {
-    return const ProfilePemilikScreen();
+    return ProfilePemilikScreen(akunId: akunId.toString());
   }
 }

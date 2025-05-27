@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'pet_characteristics_Input.dart';
 
 class PetSelectionScreen extends StatelessWidget {
-  const PetSelectionScreen({Key? key}) : super(key: key);
+  final String akunId;
+
+  const PetSelectionScreen({Key? key, required this.akunId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +27,6 @@ class PetSelectionScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 60),
-
-                      // Pilihan hewan
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 29.0),
                         child: Column(
@@ -39,10 +39,7 @@ class PetSelectionScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
                       const Spacer(),
-
-                      // Home Indicator
                       Container(
                         width: 134,
                         height: 5,
@@ -66,10 +63,14 @@ class PetSelectionScreen extends StatelessWidget {
   Widget _buildOption(BuildContext context, String name) {
     return GestureDetector(
       onTap: () {
+        // Kirim juga akunId ke halaman berikutnya
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PetCharacteristicsInput(petType: name),
+            builder: (context) => PetCharacteristicsInput(
+              petType: name,
+              akunId: akunId,  // Pastikan PetCharacteristicsInput juga punya parameter ini
+            ),
           ),
         );
       },

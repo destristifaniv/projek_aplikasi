@@ -50,7 +50,7 @@ class OnboardingScreen extends StatelessWidget {
                         // Navigasi ke sign up
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const SignUpScreen()
+                          MaterialPageRoute(builder: (context) => const SignUpScreen(role: 'user')
 ),
                          );
                       },

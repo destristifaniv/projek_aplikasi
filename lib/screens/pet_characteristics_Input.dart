@@ -4,8 +4,13 @@ import '../widgets/icons/done_icon.dart';
 
 class PetCharacteristicsInput extends StatefulWidget {
   final String petType;
+  final String akunId;  // Tambahan parameter akunId
 
-  const PetCharacteristicsInput({Key? key, required this.petType}) : super(key: key);
+  const PetCharacteristicsInput({
+    Key? key,
+    required this.petType,
+    required this.akunId,
+  }) : super(key: key);
 
   @override
   State<PetCharacteristicsInput> createState() => _PetCharacteristicsInputState();
@@ -80,6 +85,19 @@ class _PetCharacteristicsInputState extends State<PetCharacteristicsInput> {
                         fontFamily: 'Montserrat',
                         height: 1.1,
                         letterSpacing: 0.3,
+                      ),
+                    ),
+                  ),
+
+                  // Contoh tampilkan akunId
+                  Container(
+                    margin: const EdgeInsets.only(top: 15),
+                    child: Text(
+                      'Akun ID: ${widget.akunId}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Montserrat',
+                        color: Colors.grey,
                       ),
                     ),
                   ),
