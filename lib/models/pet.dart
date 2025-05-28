@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart'; // Hanya untuk contoh, bukan di model sebenarnya
+import 'package:flutter/material.dart'; 
 
 class Pet {
   final int? id;
@@ -10,19 +10,19 @@ class Pet {
   final int pemilikId;
   final int? dokterId;
   final String? foto; // Path relatif foto
-  final String? kondisi; // <-- TAMBAHKAN INI
+  final String? kondisi; 
 
   Pet({
     this.id,
     required this.nama,
     required this.jenis,
-    required this.warna,
+    this.warna = '',
     required this.usia,
     this.catatan,
     required this.pemilikId,
     this.dokterId,
     this.foto,
-    this.kondisi, // <-- TAMBAHKAN INI
+    required this.kondisi, 
   });
 
   factory Pet.fromJson(Map<String, dynamic> json) {
@@ -35,14 +35,14 @@ class Pet {
       catatan: json['catatan'],
       pemilikId: json['pemilik_id'],
       dokterId: json['dokter_id'],
-      foto: json['foto'], // <-- Pastikan ini sesuai dengan key di JSON Anda
-      kondisi: json['kondisi'], // <-- TAMBAHKAN INI
+      foto: json['foto'], 
+      kondisi: json['kondisi'], 
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      // 'id': id,
       'nama': nama,
       'jenis': jenis,
       'warna': warna,
@@ -51,7 +51,7 @@ class Pet {
       'pemilik_id': pemilikId,
       'dokter_id': dokterId,
       'foto': foto,
-      'kondisi': kondisi, // <-- TAMBAHKAN INI
+      'kondisi': kondisi, 
     };
   }
 
@@ -65,7 +65,7 @@ class Pet {
     int? pemilikId,
     int? dokterId,
     String? foto,
-    String? kondisi, // <-- TAMBAHKAN INI
+    String? kondisi, 
   }) {
     return Pet(
       id: id ?? this.id,
@@ -77,7 +77,7 @@ class Pet {
       pemilikId: pemilikId ?? this.pemilikId,
       dokterId: dokterId ?? this.dokterId,
       foto: foto ?? this.foto,
-      kondisi: kondisi ?? this.kondisi, // <-- TAMBAHKAN INI
+      kondisi: kondisi ?? this.kondisi, 
     );
   }
 }

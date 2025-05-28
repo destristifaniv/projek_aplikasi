@@ -68,7 +68,7 @@ class PetListScreen extends StatelessWidget {
       onPressed: () async {
         final result = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => AddPetScreen(pemilikId: pemilikId)),
+          MaterialPageRoute(builder: (_) => AddPetScreen(idAkunPemilik: pemilikId)),
         );
         if (result == true) {
           await petProvider.fetchPetsByPemilikAkunId(pemilikId);

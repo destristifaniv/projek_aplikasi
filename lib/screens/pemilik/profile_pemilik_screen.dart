@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:klinik_hewan/config/app_config.dart';
+import 'package:klinik_hewan/config/app_config.dart'; // Pastikan ini benar
+import 'package:klinik_hewan/screens/pemilik/edit_profile_screen.dart'; // Import EditProfileScreen
+import 'package:klinik_hewan/screens/pemilik/change_password_screen.dart'; // Import ChangePasswordScreen
 
 // Warna yang sering digunakan, mungkin bisa di satu file theme.dart
 const Color primaryColor = Color(0xFFF8A5B3);
 const Color accentColor = Color(0xFFFF7096);
-
-// Hapus PetsScreen dan EditProfileScreen dummy jika sudah di file terpisah
-// Asumsi kelas Pet sudah di models/pet.dart, jadi tidak perlu di sini
 
 class ProfilePemilikScreen extends StatefulWidget {
   final String akunId; // akunId di sini adalah ID dari tabel akuns/users
@@ -49,7 +48,7 @@ class _ProfilePemilikScreenState extends State<ProfilePemilikScreen> {
       print('DEBUG: Fetching profile from: $url');
 
       final response = await http.get(
-        Uri.parse(url.toString()), // Pastikan menggunakan Uri.parse().toString() jika url sudah Uri
+        url, // Uri.parse() sudah dilakukan di atas
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -91,25 +90,36 @@ class _ProfilePemilikScreenState extends State<ProfilePemilikScreen> {
     }
   }
 
-  void _logout(BuildContext context) {
-    Future.microtask(() async {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('auth_token');
-      Navigator.of(context).pushReplacementNamed('/login');
-    });
+  Future<void> _logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token');
+    // Navigasi ke halaman login dan hapus semua rute sebelumnya
+    if (context.mounted) {
+      Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+    }
   }
 
   void _navigateToChangePassword(BuildContext context) {
-    Navigator.of(context).pushNamed('/change_password');
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ChangePasswordScreen(akunId: widget.akunId),
+      ),
+    );
   }
 
   void _navigateToEditProfile(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => EditProfileScreen(akunId: widget.akunId),
+        builder: (context) => EditProfileScreen(
+          akunId: widget.akunId,
+          initialProfileData: profileData, // Mengirim data awal ke layar edit
+        ),
       ),
-    ).then((_) {
-      loadProfile(); // Refresh data setelah kembali dari EditProfileScreen
+    ).then((result) {
+      // Refresh data setelah kembali dari EditProfileScreen
+      if (result == true) { // Asumsi `EditProfileScreen` mengembalikan `true` jika berhasil diupdate
+        loadProfile();
+      }
     });
   }
 
@@ -141,14 +151,10 @@ class _ProfilePemilikScreenState extends State<ProfilePemilikScreen> {
     final Map<String, dynamic>? pemilikData = profileData!['pemilik'];
 
     // Gunakan nilai default jika pemilikData null atau properti di dalamnya null
-    // Perhatikan bahwa jika pemilikData itu sendiri null, maka nama, telepon, dan alamat akan menjadi '-'
     final String namaPemilik = pemilikData?['nama'] ?? '-';
     final String emailAkun = profileData!['email'] ?? '-'; // Email selalu dari profileData utama
     final String teleponPemilik = pemilikData?['telepon'] ?? '-';
     final String alamatPemilik = pemilikData?['alamat'] ?? '-';
-
-    // List hewan tidak perlu lagi diakses jika tidak ditampilkan
-    // final List<dynamic> hewanList = pemilikData?['pets'] ?? [];
 
     return Scaffold(
       backgroundColor: const Color(0xFFFDF9FA),
@@ -280,50 +286,6 @@ class _ProfilePemilikScreenState extends State<ProfilePemilikScreen> {
                 ],
               ),
             ),
-            // Hapus bagian "Daftar Hewan Anda" sepenuhnya jika tidak perlu ditampilkan di sini
-            // const SizedBox(height: 30), // Anda bisa hapus atau sesuaikan spasi ini
-
-            // Hapus widget PetsScreen atau bagian daftar hewan di sini
-            /*
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Daftar Hewan Anda',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.pink.shade700,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            hewanList.isEmpty
-                ? Text(
-                    'Tidak ada hewan yang terdaftar untuk akun ini.',
-                    style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey.shade600),
-                  )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: hewanList.length,
-                    itemBuilder: (context, index) {
-                      final hewan = hewanList[index] as Map<String, dynamic>;
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Row(
-                          children: [
-                            Icon(Icons.pets, size: 18, color: Colors.pink.shade400),
-                            const SizedBox(width: 8),
-                            Text(
-                              '${hewan['nama']} (${hewan['jenis']}, ${hewan['warna']})',
-                              style: TextStyle(fontSize: 16, color: Colors.grey.shade800),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-            */
           ],
         ),
       ),
@@ -361,26 +323,6 @@ class _ProfilePemilikScreenState extends State<ProfilePemilikScreen> {
       indent: 20,
       endIndent: 20,
       color: Colors.grey.shade200,
-    );
-  }
-}
-
-// EditProfileScreen (dummy)
-class EditProfileScreen extends StatelessWidget {
-  final String akunId;
-
-  const EditProfileScreen({super.key, required this.akunId});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Profil Pemilik'),
-        backgroundColor: Colors.pink.shade300,
-      ),
-      body: Center(
-        child: Text('Halaman Edit Profil untuk pemilik akun: $akunId'),
-      ),
     );
   }
 }

@@ -9,6 +9,9 @@ import 'screens/sign_in_screen.dart';
 import 'screens/dokter/home_dokter_screen.dart';
 import 'screens/pemilik/home_pemilik_screen.dart';
 
+import 'package:klinik_hewan/screens/pemilik/edit_profile_screen.dart';
+import 'package:klinik_hewan/screens/pemilik/change_password_screen.dart';
+
 // Import providers
 import 'providers/pasien_provider.dart';
 import 'providers/pet_provider.dart';
@@ -54,6 +57,12 @@ class MyApp extends StatelessWidget {
         '/welcome': (context) => const WelcomeScreen(),
         '/signInPemilik': (context) => const SignInScreen(role: 'pemilik'),
         '/signInDokter': (context) => const SignInScreen(role: 'dokter'),
+        // Add a general '/login' route that defaults to a sign-in screen.
+        // When logging out, we generally want to return to a state where the user
+        // can choose their role again or go to a default login.
+        // For simplicity, I'm directing it to the 'pemilik' sign-in.
+        '/login': (context) => const SignInScreen(role: 'pemilik'), // <--- ADD THIS LINE FOR LOGOUT
+
         '/petList': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
           final pemilikId = args?['pemilikId'];
@@ -69,6 +78,10 @@ class MyApp extends StatelessWidget {
           final akunId = args?['akunId'];
           return HomeDokterScreen(akunId: akunId);
         },
+        // The edit_profile_screen.dart and change_password_screen.dart are pushed
+        // using MaterialPageRoute directly from ProfilePemilikScreen, so they
+        // don't necessarily need named routes here unless you navigate to them
+        // using `Navigator.pushNamed` from other parts of your app.
       },
     );
   }

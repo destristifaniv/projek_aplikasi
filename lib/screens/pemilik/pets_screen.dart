@@ -26,7 +26,7 @@ class _PetsScreenState extends State<PetsScreen> {
   void _navigateToAddPet(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => AddPetScreen(pemilikId: widget.idAkun)), // Pastikan parameter sesuai dengan konstruktor AddPetScreen
+      MaterialPageRoute(builder: (_) => AddPetScreen(idAkunPemilik: widget.idAkun)), // Pastikan parameter sesuai dengan konstruktor AddPetScreen
     );
 
     if (result == true) {
